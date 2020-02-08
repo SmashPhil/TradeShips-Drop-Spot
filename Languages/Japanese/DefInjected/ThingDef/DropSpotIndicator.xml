@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <DropSpotTradeShip.label>アイテム 投下地点</DropSpotTradeShip.label>
+  <DropSpotTradeShip.description>軌道トレーダーの宇宙船や他の派閥(クエスト報酬)が、マップ内にアイテムを落とす場所を指定します。</DropSpotTradeShip.description>
+  <Blueprint_DropSpotTradeShip.label>アイテム投下地点(設計)</Blueprint_DropSpotTradeShip.label>
+  <Frame_DropSpotTradeShip.label>アイテム投下地点(施工)</Frame_DropSpotTradeShip.label>
+  <Frame_DropSpotTradeShip.description>軌道トレーダーの宇宙船や他の派閥(クエスト報酬)が、マップ内にアイテムを落とす場所を指定します。</Frame_DropSpotTradeShip.description>
+
+</LanguageData>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<ThingDef ParentName="BuildingBase">
+		<defName>DropSpotTradeShip</defName>
+		<label>Drop Spot</label>
+		<thingClass>DropSpot.DropSpotIndicator</thingClass>
+		<description>Designates a spot for trade ships to drop their items</description>
+		<graphicData>
+			<texPath>DropSpotMiscIcon</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
+		<statBases>
+			<WorkToBuild>0</WorkToBuild>
+		</statBases>
+		<rotatable>false</rotatable>
+		<scatterableOnMapGen>false</scatterableOnMapGen>
+		<useHitPoints>False</useHitPoints>
+		<designationCategory>Misc</designationCategory>
+		<passability>Standable</passability>
+		<building>
+			<sowTag>SupportPlantsOnly</sowTag>
+			<canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
+			<ai_chillDestination>false</ai_chillDestination>
+		</building>
+		<designationHotKey>Misc11</designationHotKey>
+	</ThingDef>
+</Defs>
