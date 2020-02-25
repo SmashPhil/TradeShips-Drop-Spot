@@ -2,9 +2,11 @@
 <ModMetaData>
 	<name>Trade Ships Drop Spot</name>
 	<author>Smash Phil</author>
-	<supportedVersions>
+		<supportedVersions>
 		<li>1.0</li>
+		<li>1.1</li>
 	</supportedVersions>
+	<packageId>Smash.Phil.TSDS</packageId>
 	
 	<description>
 		Control where Trade Ships will drop their drop pods when sending items.
