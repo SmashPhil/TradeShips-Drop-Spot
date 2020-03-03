@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using Verse;
 using RimWorld;
@@ -16,13 +16,13 @@ namespace DropSpot
     {
         static DropSpotHarmony()
         {
-            var harmony = HarmonyInstance.Create("rimworld.dropspottradeships.smashphil");
+            var harmony = new Harmony("rimworld.dropspottradeships.smashphil");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             //HarmonyInstance.DEBUG = true;
 
             harmony.Patch(original: AccessTools.Method(type: typeof(DropCellFinder), name: nameof(DropCellFinder.TradeDropSpot)),
-                prefix: new HarmonyMethod(type: typeof(DropSpotHarmony),
-                name: nameof(CustomDropSpotTradeShips)));
+                prefix: new HarmonyMethod(typeof(DropSpotHarmony),
+                nameof(CustomDropSpotTradeShips)));
         }
 
         public static bool CustomDropSpotTradeShips(Map map, ref IntVec3 __result)
