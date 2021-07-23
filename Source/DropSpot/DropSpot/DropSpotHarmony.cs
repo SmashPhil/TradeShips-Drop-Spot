@@ -33,7 +33,7 @@ namespace DropSpot
                 IntVec3 dropSpot = dropSpotIndicator.Position;
                 if(!DropCellFinder.TryFindDropSpotNear(dropSpot, map, out IntVec3 singleDropSpot, false, false))
                 {
-                    Log.Error("Could find no good TradeDropSpot near dropCenter " + dropSpot + ". Using a random standable unfogged cell.", false);
+                    Log.Error("Could find no good TradeDropSpot near dropCenter " + dropSpot + ". Using a random standable unfogged cell.");
                     singleDropSpot = CellFinderLoose.RandomCellWith((IntVec3 c) => c.Standable(map) && !c.Fogged(map), map, 1000);
                 }
                 __result = singleDropSpot;
