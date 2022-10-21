@@ -11,9 +11,9 @@ namespace DropSpot
     {
         public DropSpotIndicator()
         {
-            if(Current.Game.CurrentMap != null)
+            if (Current.Game.CurrentMap != null)
             {
-                if(Current.Game.CurrentMap.listerBuildings.allBuildingsColonist.Find(x => x is DropSpotIndicator) is DropSpotIndicator dropSpot)
+                if (Current.Game.CurrentMap.listerBuildings.allBuildingsColonist.Find(x => x is DropSpotIndicator) is DropSpotIndicator dropSpot)
                 {
                     dropSpot.Destroy();
                     Messages.Message("DropSpotDestroyed".Translate(), MessageTypeDefOf.NeutralEvent, false);

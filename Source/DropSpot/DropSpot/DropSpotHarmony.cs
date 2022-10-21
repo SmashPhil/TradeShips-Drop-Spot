@@ -7,13 +7,14 @@ using HarmonyLib;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using OpCodes = System.Reflection.Emit.OpCodes;
 
 namespace DropSpot
 {
     [StaticConstructorOnStartup]
     internal static class DropSpotHarmony
     {
+        public static readonly Texture2D ColorWheel = ContentFinder<Texture2D>.Get("colorwheel", true);
+
         static DropSpotHarmony()
         {
             var harmony = new Harmony("rimworld.dropspottradeships.smashphil");
@@ -27,11 +28,11 @@ namespace DropSpot
 
         public static bool CustomDropSpotTradeShips(Map map, ref IntVec3 __result)
         {
-            DropSpotIndicator dropSpotIndicator = map.listerBuildings.allBuildingsColonist.Find(x => x is DropSpotIndicator) as DropSpotIndicator;
-            if(dropSpotIndicator != null && !map.roofGrid.Roofed(dropSpotIndicator.Position) && DropSpotHarmony.AnyAdjacentGoodDropSpot(dropSpotIndicator.Position, map, false, false))
+            DropSpotIndicator dropSpotIndicator = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x is DropSpotIndicator) as DropSpotIndicator;
+            if (dropSpotIndicator != null && !map.roofGrid.Roofed(dropSpotIndicator.Position) && AnyAdjacentGoodDropSpot(dropSpotIndicator.Position, map, false, false))
             {
                 IntVec3 dropSpot = dropSpotIndicator.Position;
-                if(!DropCellFinder.TryFindDropSpotNear(dropSpot, map, out IntVec3 singleDropSpot, false, false))
+                if (!DropCellFinder.TryFindDropSpotNear(dropSpot, map, out IntVec3 singleDropSpot, false, false))
                 {
                     Log.Error("Could find no good TradeDropSpot near dropCenter " + dropSpot + ". Using a random standable unfogged cell.");
                     singleDropSpot = CellFinderLoose.RandomCellWith((IntVec3 c) => c.Standable(map) && !c.Fogged(map), map, 1000);
@@ -46,7 +47,5 @@ namespace DropSpot
         {
             return DropCellFinder.IsGoodDropSpot(c + IntVec3.North, map, allowFogged, canRoofPunch) || DropCellFinder.IsGoodDropSpot(c + IntVec3.East, map, allowFogged, canRoofPunch) || DropCellFinder.IsGoodDropSpot(c + IntVec3.South, map, allowFogged, canRoofPunch) || DropCellFinder.IsGoodDropSpot(c + IntVec3.West, map, allowFogged, canRoofPunch);
         }
-
-        public static readonly Texture2D ColorWheel = ContentFinder<Texture2D>.Get("colorwheel", true);
     }
 }
