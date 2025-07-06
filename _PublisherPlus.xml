@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Excluded>
+    <exclude>.git</exclude>
+    <exclude>Source</exclude>
+    <exclude>v1.1\Assemblies\DropSpot.pdb</exclude>
+    <exclude>v1.3\Assemblies\DropSpot.pdb</exclude>
+    <exclude>v1.4\Assemblies\DropSpot.pdb</exclude>
+    <exclude>v1.6\Assemblies\DropSpot.pdb</exclude>
+  </Excluded>
+</Configuration>

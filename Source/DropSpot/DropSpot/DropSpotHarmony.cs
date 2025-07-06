@@ -10,60 +10,72 @@ using RimWorld;
 
 namespace DropSpot
 {
-    [StaticConstructorOnStartup]
-    internal static class DropSpotHarmony
+  [StaticConstructorOnStartup]
+  internal static class DropSpotHarmony
+  {
+    static DropSpotHarmony()
     {
-        public static readonly Texture2D ColorWheel = ContentFinder<Texture2D>.Get("colorwheel", true);
+      var harmony = new Harmony("rimworld.dropspottradeships.smashphil");
+      harmony.PatchAll(Assembly.GetExecutingAssembly());
+      //HarmonyInstance.DEBUG = true;
 
-        static DropSpotHarmony()
+      harmony.Patch(
+        original: AccessTools.Method(type: typeof(DropCellFinder),
+          name: nameof(DropCellFinder.TradeDropSpot)),
+        prefix: new HarmonyMethod(typeof(DropSpotHarmony),
+          nameof(CustomDropSpotTradeShips)));
+    }
+
+    public static bool CustomDropSpotTradeShips(Map map, ref IntVec3 __result)
+    {
+      DropSpotIndicator dropSpotIndicator =
+        map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x is DropSpotIndicator) as
+          DropSpotIndicator;
+      if (dropSpotIndicator != null && !map.roofGrid.Roofed(dropSpotIndicator.Position))
+      {
+        IntVec3 dropSpot = dropSpotIndicator.Position;
+        if (AnyAdjacentGoodDropSpot(dropSpot, map, false, false))
         {
-            var harmony = new Harmony("rimworld.dropspottradeships.smashphil");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-            //HarmonyInstance.DEBUG = true;
-
-            harmony.Patch(original: AccessTools.Method(type: typeof(DropCellFinder), name: nameof(DropCellFinder.TradeDropSpot)),
-                prefix: new HarmonyMethod(typeof(DropSpotHarmony),
-                nameof(CustomDropSpotTradeShips)));
+          if (!DropCellFinder.TryFindDropSpotNear(dropSpot, map, out IntVec3 singleDropSpot, false,
+            false))
+          {
+            Log.Error("Could find no good TradeDropSpot near dropCenter " + dropSpot +
+              ". Using a random standable unfogged cell.");
+            singleDropSpot =
+              CellFinderLoose.RandomCellWith((IntVec3 c) => c.Standable(map) && !c.Fogged(map), map,
+                1000);
+          }
+          __result = singleDropSpot;
+          return false;
         }
-
-        public static bool CustomDropSpotTradeShips(Map map, ref IntVec3 __result)
+        else
         {
-            DropSpotIndicator dropSpotIndicator = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x is DropSpotIndicator) as DropSpotIndicator;
-            if (dropSpotIndicator != null && !map.roofGrid.Roofed(dropSpotIndicator.Position))
+          int num = 8;
+          while (num < map.Size.x)
+          {
+            if (CellFinder.TryFindRandomCellNear(dropSpot, map, num,
+              (IntVec3 c) =>
+                DropCellFinder.IsGoodDropSpot(c, map, allowFogged: false, canRoofPunch: false),
+              out IntVec3 position))
             {
-                IntVec3 dropSpot = dropSpotIndicator.Position;
-				if (AnyAdjacentGoodDropSpot(dropSpot, map, false, false))
-				{
-					if (!DropCellFinder.TryFindDropSpotNear(dropSpot, map, out IntVec3 singleDropSpot, false, false))
-					{
-						Log.Error("Could find no good TradeDropSpot near dropCenter " + dropSpot + ". Using a random standable unfogged cell.");
-						singleDropSpot = CellFinderLoose.RandomCellWith((IntVec3 c) => c.Standable(map) && !c.Fogged(map), map, 1000);
-					}
-					__result = singleDropSpot;
-					return false;
-				}
-				else
-				{
-					int num = 8;
-					while (num < map.Size.x)
-					{
-						if (CellFinder.TryFindRandomCellNear(dropSpot, map, num, (IntVec3 c) => DropCellFinder.IsGoodDropSpot(c, map, allowFogged: false, canRoofPunch: false), out IntVec3 position))
-						{
-							__result = position;
-							return false;
-						}
-						num = Mathf.RoundToInt(num * 1.1f);
-					}
-				}
-				return true;
+              __result = position;
+              return false;
             }
-            return true;
+            num = Mathf.RoundToInt(num * 1.1f);
+          }
         }
+        return true;
+      }
+      return true;
+    }
 
-        private static bool AnyAdjacentGoodDropSpot(IntVec3 c, Map map, bool allowFogged, bool canRoofPunch)
-        {
-            return DropCellFinder.IsGoodDropSpot(c + IntVec3.North, map, allowFogged, canRoofPunch) || DropCellFinder.IsGoodDropSpot(c + IntVec3.East, map, allowFogged, canRoofPunch) 
-                || DropCellFinder.IsGoodDropSpot(c + IntVec3.South, map, allowFogged, canRoofPunch) || DropCellFinder.IsGoodDropSpot(c + IntVec3.West, map, allowFogged, canRoofPunch);
-        }
-	}
+    private static bool AnyAdjacentGoodDropSpot(IntVec3 c, Map map, bool allowFogged,
+      bool canRoofPunch)
+    {
+      return DropCellFinder.IsGoodDropSpot(c + IntVec3.North, map, allowFogged, canRoofPunch) ||
+        DropCellFinder.IsGoodDropSpot(c + IntVec3.East, map, allowFogged, canRoofPunch)
+        || DropCellFinder.IsGoodDropSpot(c + IntVec3.South, map, allowFogged, canRoofPunch) ||
+        DropCellFinder.IsGoodDropSpot(c + IntVec3.West, map, allowFogged, canRoofPunch);
+    }
+  }
 }
